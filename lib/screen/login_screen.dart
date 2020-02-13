@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello/auth/auth_service.dart';
 import 'package:hello/widgets/custom_icon.dart';
 import 'package:hello/widgets/social_login.dart';
 
@@ -8,6 +9,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  AuthProvider authProvider = AuthProvider();
+
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   Widget _horizontalLine() => Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 16.0,
@@ -33,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: EdgeInsets.only(top: 20.0),
                 child: Image.asset('assets/login.jpeg'),
               ),
-              Expanded(child: Container()),
+              // Expanded(child: Container()),
               // Image.asset('assets/bg.jpeg')
             ],
           ),
@@ -41,27 +46,32 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Padding(
               padding: EdgeInsets.only(left: 28, right: 28, top: 60),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Image.asset(
-                        'assets/login.jpeg',
-                        height: 120.0,
-                        width: 120.0,
-                      ),
-                      Text(
-                        'Login',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 50.0,
-                            fontWeight: FontWeight.bold),
+                      Container(
+                        padding: EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            gradient: LinearGradient(
+                                colors: [Colors.black38, Colors.black54])),
+                        child: Text(
+                          'Renegades Africa',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold),
+                        ),
                       )
                     ],
                   ),
                   SizedBox(height: 30),
                   Container(
                     width: double.infinity,
-                    height: 400.0,
+                    height: 430.0,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
@@ -89,7 +99,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 15.0),
                           TextFormField(
+                            controller: _emailController,
                             decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10.0),
                                 suffixIcon: Icon(Icons.email),
                                 border: OutlineInputBorder(
                                     gapPadding: 50.0,
@@ -99,7 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: 20.0),
                           TextFormField(
+                            controller: _passwordController,
                             decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10.0),
                                 suffixIcon: Icon(Icons.https),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(40.0)),
@@ -109,27 +123,35 @@ class _LoginScreenState extends State<LoginScreen> {
                           ButtonBar(
                             children: <Widget>[
                               FlatButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    await authProvider
+                                        .signInWithEmailAndPassword(
+                                            _emailController.text,
+                                            _passwordController.text);
+                                  },
                                   child: Text('Forgot Password?'))
                             ],
                           ),
                           InkWell(
                             onTap: () {},
                             child: Container(
-                              height: 35.0,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  gradient: LinearGradient(colors: [
-                                    Color(0xFF17EAD9),
-                                    Color(0xFF6078EA)
-                                  ]),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color:
-                                            Color(0xFF6078e8).withOpacity(.4))
-                                  ]),
-                              child: InkWell(
-                                onTap: () {},
+                              height: 40.0,
+                              child: MaterialButton(
+                                splashColor: Color(0xFF6078EA),
+                                color: Color(0xFF17EAD9),
+                                onPressed: () async {
+                                  await authProvider
+                                      .createUserWithEmailAndPassword(
+                                    _emailController.text,
+                                    _passwordController.text,
+                                  );
+
+                                  // Scaffold.of(context).showSnackBar(SnackBar(
+                                  //   backgroundColor: Colors.green,
+                                  //   content:
+                                  //       Text('Account successfully created'),
+                                  // ));
+                                },
                                 child: Center(
                                     child: Text(
                                   'Sign In',
@@ -176,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Color(0xFF187adf),
                                   Color(0xFF00eaf8),
                                 ],
-                                icon: CustomSocialIcon.googleplus,
+                                icon: CustomSocialIcon.facebook,
                                 onPressed: () {},
                               ),
                             ],
